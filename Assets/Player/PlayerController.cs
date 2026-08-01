@@ -24,6 +24,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravity = 9.81f;
 
+    private Vector3 pushForce = Vector3.zero;
+    private float pushDuration = 0f;
+
     private void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -91,5 +94,30 @@ public class PlayerController : MonoBehaviour
         
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        if (pushForce.sqrMagnitude > 0.01f)
+        {
+            controller.Move(pushForce);
+            pushDuration -= Time.deltaTime;
+            if (pushDuration <= 0f)
+            {
+                pushForce = Vector3.zero;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Pushes the player in a direction with the specified force.
+    /// </summary>
+    /// <param name="pushDirection">The direction to push the player (will be normalized)</param>
+    /// <param name="pushMagnitude">The magnitude of the push force</param>
+    /// <param name="duration">How long the push should be applied (in seconds)</param>
+    public void PushPlayer(Vector3 pushDirection, float pushMagnitude, float duration = 0.1f)
+    {
+        Vector3 normalizedDirection = pushDirection.normalized;
+        normalizedDirection.y = 0f; // Keep push horizontal to prevent unintended vertical movement
+
+        pushForce = normalizedDirection * pushMagnitude;
+        pushDuration = duration;
     }
 }
