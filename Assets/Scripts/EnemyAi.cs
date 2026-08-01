@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyAi : MonoBehaviour
+public class EnemyAi : MonoBehaviour, ISongResponsive
 {
 
     public float moveSpeed = 5f;
@@ -8,12 +8,13 @@ public class EnemyAi : MonoBehaviour
     public float minimumPlayerDistance = 1f;
     private Rigidbody rb;
     GameObject player;
+    private float currentSpeed;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        player = GameObject.FindFirstObjectByType<PlayerController>().gameObject;
-
+        player = FindFirstObjectByType<PlayerController>().gameObject;
+        currentSpeed = moveSpeed; //add by petersen
     }
 
     /*
@@ -41,12 +42,13 @@ public class EnemyAi : MonoBehaviour
         }
 
         // 3. Calculate how much velocity we need to add to match our desired movement
-        Vector3 targetVelocity = targetDirection * moveSpeed;
+        Vector3 targetVelocity = targetDirection * currentSpeed;
         Vector3 velocityError = targetVelocity - new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
         // 4. Gently or firmly force the enemy toward the target velocity without breaking physics
         Vector3 movementForce = velocityError * acceleration * Time.fixedDeltaTime;
         rb.AddForce(movementForce, ForceMode.VelocityChange);
+        currentSpeed = moveSpeed;
     }
 
 
@@ -55,6 +57,14 @@ public class EnemyAi : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void OnSongListening(Song song)
+    {
+        WeakSong weakSong = song as WeakSong;
+        if (weakSong != null)
+        {
+            currentSpeed = moveSpeed * weakSong.slownessFactor;
+        }
+    }
 }
 
 
