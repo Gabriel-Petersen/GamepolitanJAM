@@ -16,9 +16,10 @@ public class enemyDamageArea : MonoBehaviour
 
     void OnTriggerEnter(Collider collision)
     {
-        Debug.Log("Collision detected with: " + collision.gameObject.name);
-        HealthSystem healthSystem = collision.gameObject.GetComponent<HealthSystem>();
-        if (healthSystem != null && healthSystem.isPlayer)
+        GameObject obj = collision.gameObject;
+        Debug.Log("Collision detected with: " + obj.name);
+        HealthSystem healthSystem = obj.GetComponent<HealthSystem>();
+        if (healthSystem != null && obj.CompareTag("Player"))
         {
             healthSystem.ChangeHp(-1);
         }

@@ -1,35 +1,41 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    private static readonly int VerticalHash = Animator.StringToHash("Vertical");
+    private static readonly int HorizontalHash = Animator.StringToHash("Horizontal");
+    private static readonly int IsWalkingHash = Animator.StringToHash("IsWalking");
+
     [SerializeField] private List<Song> songs = new();
+
     private CharacterController controller;
+    private Animator animator;
     private Transform cameraTransform;
     private Vector3 velocity;
-    private bool isGrounded;
     private Vector3 move;
+    private bool isGrounded;
 
     [SerializeField] private float singSpeed = 1.0f;
     [SerializeField] private float wkSpeed = 3.0f;
     [SerializeField] private float runSpeed = 6.0f;
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravity = 9.81f;
-    [SerializeField] private float rotSpeed = 15f;
-    [SerializeField] private float lookSpeed = 100f;
-    [SerializeField] private Animator animator;
-
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
         cameraTransform = Camera.main.transform;
         foreach (var component in GetComponents<Song>())
         {
             songs.Add(component);
         }
-        gravity *= -1;
+
+        if (gravity > 0)
+            gravity *= -1;
     }
 
     private void Update()
@@ -40,10 +46,8 @@ public class PlayerController : MonoBehaviour
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
-        animator.SetFloat("Horizontal", moveX);
-        animator.SetFloat("Vertical", moveZ);
-
-        
+        animator.SetFloat(HorizontalHash, moveX);
+        animator.SetFloat(VerticalHash, moveZ);
 
         float speed = (Input.GetKey(KeyCode.LeftShift) ? runSpeed : wkSpeed);
         foreach (var song in songs)
@@ -58,40 +62,29 @@ public class PlayerController : MonoBehaviour
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
-        //move 1 - seta anda pra cada direção
-        /*
-        move = (forward * moveZ) + (right * moveX);
-        move.y = 0f;
-        move.Normalize();
+        forward.y = 0f;
+        right.y = 0f;
+        forward.Normalize();
+        right.Normalize();
 
-          if (move.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetPlayerRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetPlayerRotation, rotSpeed * Time.deltaTime);
-        }
-        */
-
-
-        //move 2 - rotaciona o player com A e D
-        move = (transform.forward * moveZ);
-        transform.Rotate(0f, moveX * lookSpeed * Time.deltaTime, 0f);
-
-
-
-
-        //resto do move
+        move = forward * moveZ + right * moveX;
 
         controller.Move(move * (speed * Time.deltaTime));
 
-        if (moveZ > 0.1f || moveX > 0.1f)
+        if (move.sqrMagnitude > 0.01f)
         {
-            animator.SetBool("IsWalking", true);
+            controller.Move(move * (speed * Time.deltaTime));
+            animator.SetBool(IsWalkingHash, true);
         }
         else
         {
-            animator.SetBool("IsWalking", false);
+            animator.SetBool(IsWalkingHash, false);
         }
-        
+
+        if (forward.sqrMagnitude > 0.01f)
+        {
+            transform.rotation = Quaternion.LookRotation(forward);
+        }
 
         if (Input.GetButtonDown("Jump") && isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
