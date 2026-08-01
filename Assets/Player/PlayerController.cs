@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravity = 9.81f;
     [SerializeField] private float rotSpeed = 15f;
+    [SerializeField] private float lookSpeed = 100f;
 
     private void Start()
     {
@@ -51,16 +52,29 @@ public class PlayerController : MonoBehaviour
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
+        //move 1 - seta anda pra cada direção
+        /*
         move = (forward * moveZ) + (right * moveX);
         move.y = 0f;
         move.Normalize();
 
-        if (move.sqrMagnitude > 0.01f)
+          if (move.sqrMagnitude > 0.01f)
         {
             Quaternion targetPlayerRotation = Quaternion.LookRotation(move);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetPlayerRotation, rotSpeed * Time.deltaTime);
         }
+        */
 
+
+        //move 2 - rotaciona o player com A e D
+        move = (transform.forward * moveZ);
+        transform.Rotate(0f, moveX * lookSpeed * Time.deltaTime, 0f);
+
+
+
+
+        //resto do move
+      
         controller.Move(move * (speed * Time.deltaTime));
 
         if (Input.GetButtonDown("Jump") && isGrounded)
