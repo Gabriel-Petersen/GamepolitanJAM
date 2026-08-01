@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
-
+    
     [Range(1f, 10f)]
     public float maxHp = 3f;
     public float currentHp;
@@ -11,19 +11,27 @@ public class HealthSystem : MonoBehaviour
     public Material damagedMaterial;
     private Material defaultMaterial;
     public float blinkDuration = 0.1f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public Renderer damage_renderer;
+    public Color defaultSpriteColor = Color.white;
+    public Color damagedSpriteColor = Color.red;
+    private bool isSpriteRenderer = false;
+
+    //definir cor apenas se o alvo for um sprite renderer
+    //definir material apenas se o alvo for um objeto 3D
     void Start()
     {
         currentHp = maxHp;
-        defaultMaterial = GetComponent<Renderer>().material;
-    }
-
-    
-
-    // Update is called once per frame
-    void Update()
-    {
         
+        if (damage_renderer == null)
+            damage_renderer = GetComponent<Renderer>();
+        defaultMaterial = damage_renderer.material;
+
+        
+        if (damage_renderer is SpriteRenderer)
+        {
+            Debug.Log("Sprite renderer detected.");
+            isSpriteRenderer = true;
+        }
     }
 
     public void ChangeHp(float amount)
@@ -37,8 +45,9 @@ public class HealthSystem : MonoBehaviour
     public void damageBlink()
     {
         if (blinkWhenDamaged)
-        { 
-            GetComponent<Renderer>().material = damagedMaterial;
+        {
+            changeMaterial(damagedMaterial, damagedSpriteColor);
+          
             Invoke("resetMaterial", blinkDuration);
             Debug.Log(gameObject.name + " is blinking due to damage.");
         }
@@ -46,8 +55,25 @@ public class HealthSystem : MonoBehaviour
 
     public void resetMaterial()
     {
-        GetComponent<Renderer>().material = defaultMaterial;
+        changeMaterial(defaultMaterial, defaultSpriteColor);
     }
 
+
+    
+    private void changeMaterial(Material newMaterial = null, Color newColor = default(Color))
+    {
+        //so eh necessario definir cor apenas se o alvo for um sprite renderer
+        //so eh necessario definir material apenas se o alvo for um objeto 3D
+
+        if (isSpriteRenderer)
+        {
+            (damage_renderer as SpriteRenderer).color = newColor;
+        }
+        else
+        {
+            damage_renderer.material = newMaterial;
+        }
+    }
+   
 
 }
