@@ -5,6 +5,7 @@ public class EnemyAi : MonoBehaviour
 
     public float moveSpeed = 5f;
     public float acceleration = 20f;
+    public float minimumPlayerDistance = 1f;
     private Rigidbody rb;
     GameObject player;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -12,7 +13,7 @@ public class EnemyAi : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         player = GameObject.FindFirstObjectByType<PlayerController>().gameObject;
-  
+
     }
 
     /*
@@ -34,7 +35,7 @@ public class EnemyAi : MonoBehaviour
 
         // 2. Check if an external force (knockback) made the enemy exceed its normal speed
         // If the enemy is moving too fast, let the knockback physics take over naturally
-        if (rb.linearVelocity.magnitude > moveSpeed + 1f)
+        if (rb.linearVelocity.magnitude > moveSpeed + 1f || Vector3.Distance(player.transform.position, transform.position) < minimumPlayerDistance)
         {
             return;
         }
@@ -48,8 +49,13 @@ public class EnemyAi : MonoBehaviour
         rb.AddForce(movementForce, ForceMode.VelocityChange);
     }
 
-}
 
+    public void ThrowEnemyAtBarrier()
+    {
+        Destroy(gameObject);
+    }
+
+}
 
 
    
