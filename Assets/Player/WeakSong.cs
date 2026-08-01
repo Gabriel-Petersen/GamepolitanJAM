@@ -34,9 +34,13 @@ public class WeakSong : Song
                 {
                     Debug.Log(collider.name + " is within the weak song radius.");
 
-                    if (collider.gameObject.TryGetComponent<WeakBarrier>(out var weakBarrier))
+                    if (collider.gameObject.TryGetComponent<ISongResponsive>(out var songResponsive))
                     {
-                        weakBarrier.ReceiveSoundWave();
+                        songResponsive.OnSongListening(this);
+                    }
+                    else
+                    {
+                        Debug.LogWarning(collider.name + " does not implement ISongResponsive.");
                     }
                 }
             }
