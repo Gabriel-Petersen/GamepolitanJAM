@@ -299,17 +299,17 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  OrbitStyle: 0
+  OrbitStyle: 1
   Radius: 6
   Orbits:
     Top:
-      Radius: 2
+      Radius: 3
       Height: 5
     Center:
-      Radius: 4
+      Radius: 6
       Height: 2.25
     Bottom:
-      Radius: 2.5
+      Radius: 5
       Height: 0.1
     SplineCurvature: 0.5
   RecenteringTarget: 2
@@ -394,8 +394,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 89127026}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15212339, y: 0.0000000022772724, z: -3.5050626e-10, w: 0.98836154}
-  m_LocalPosition: {x: -1.6627, y: 3.494235, z: -7.4034915}
+  m_LocalRotation: {x: 0.1784248, y: -4.4912043e-16, z: 4.4547845e-17, w: 0.98395354}
+  m_LocalPosition: {x: -11.68, y: 3.74, z: -7.68119}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -629,7 +629,7 @@ Transform:
   m_GameObject: {fileID: 341339003}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1038,6 +1038,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1033399671}
   - component: {fileID: 1033399670}
+  - component: {fileID: 1033399672}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -1054,7 +1055,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1033399669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0dca4aba4b165c4b834cbb4e69f2d8b, type: 3}
+  m_Script: {fileID: 11500000, guid: e1dc3fa0b8793d6498ab20fa29079c24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeakBarrierManager
 --- !u!4 &1033399671
@@ -1072,6 +1073,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1033399672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033399669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c73601d814a66024e9b35d39e4716411, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MouseController
 --- !u!1 &1114783355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,7 +1192,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72247704df01dfb4b872d0f6e194478c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  velocityBreakThreshold: 0
+  onBreakEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  shakeIntensity: 0.05
+  velocityBreakThreshold: 3
 --- !u!65 &1144455213
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1854,8 +1871,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1325920012}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.15212339, y: 0.0000000022772724, z: -3.5050576e-10, w: 0.98836154}
-  m_LocalPosition: {x: -1.6627, y: 3.494235, z: -7.4034915}
+  m_LocalRotation: {x: 0.1784248, y: -4.5603793e-16, z: 8.269543e-17, w: 0.98395354}
+  m_LocalPosition: {x: -11.68, y: 3.74, z: -7.68119}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -1984,10 +2001,10 @@ GameObject:
   - component: {fileID: 1792360599}
   - component: {fileID: 1792360598}
   - component: {fileID: 1792360597}
-  - component: {fileID: 1792360596}
   - component: {fileID: 1792360595}
+  - component: {fileID: 1792360596}
   m_Layer: 0
-  m_Name: area som
+  m_Name: SoundArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2047,9 +2064,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248fbb49ea988324ab0ccadf796e5da7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::forceApplier
-  forceMagnitudeX: 10
-  forceMagnitudeY: 3
-  cooldownTime: 1
+  forceVector: {x: 5, y: 2}
 --- !u!135 &1792360597
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -2139,10 +2154,11 @@ GameObject:
   - component: {fileID: 1847375102}
   - component: {fileID: 1847375108}
   - component: {fileID: 1847375107}
+  - component: {fileID: 1847375103}
   - component: {fileID: 1847375106}
   - component: {fileID: 1847375105}
   - component: {fileID: 1847375104}
-  - component: {fileID: 1847375103}
+  - component: {fileID: 1847375109}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2159,7 +2175,7 @@ Transform:
   m_GameObject: {fileID: 1847375101}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6627, y: 1.49, z: -1.68119}
+  m_LocalPosition: {x: -11.68, y: 1.49, z: -1.68119}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -2276,6 +2292,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1847375101}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1847375109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847375101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e59d0ba64ff5f59418b10c8f22af03ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PusherSong
+  forceApplier: {fileID: 1792360596}
+  cooldownTime: 2
+  activeDuration: 0.2
 --- !u!1 &1848548842
 GameObject:
   m_ObjectHideFlags: 0
@@ -2385,11 +2416,11 @@ SceneRoots:
   - {fileID: 1298401279}
   - {fileID: 137131417}
   - {fileID: 1325920017}
-  - {fileID: 1144455216}
   - {fileID: 1167089564}
   - {fileID: 1847375102}
   - {fileID: 1848548846}
   - {fileID: 89127032}
   - {fileID: 1033399671}
   - {fileID: 1284591688}
+  - {fileID: 1144455216}
   - {fileID: 765495508}
