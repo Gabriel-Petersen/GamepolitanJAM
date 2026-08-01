@@ -51,27 +51,22 @@ public class PlayerController : MonoBehaviour
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
-        forward.y = 0f;
-        right.y = 0f;
-
-        forward.Normalize();
-        right.Normalize();
-
         move = (forward * moveZ) + (right * moveX);
+        move.y = 0f;
+        move.Normalize();
+
+        if (move.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetPlayerRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetPlayerRotation, rotSpeed * Time.deltaTime);
+        }
 
         controller.Move(move * (speed * Time.deltaTime));
 
-        if (move != Vector3.zero && moveZ >= 0)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotSpeed * Time.deltaTime);
-        }
-
         if (Input.GetButtonDown("Jump") && isGrounded)
-            velocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravity);
-
+            velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
+        
         velocity.y += gravity * Time.deltaTime;
-
         controller.Move(velocity * Time.deltaTime);
     }
 }
