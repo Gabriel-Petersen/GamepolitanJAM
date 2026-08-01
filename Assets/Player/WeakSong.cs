@@ -34,9 +34,10 @@ public class WeakSong : Song
                 {
                     Debug.Log(collider.name + " is within the weak song radius.");
 
-                    // Apply effect to the object with the target tag
-                    // For example, you can call a method on the object or change its properties
-                    // Example: collider.GetComponent<YourComponent>().ApplyEffect();
+                    if (collider.gameObject.TryGetComponent<WeakBarrier>(out var weakBarrier))
+                    {
+                        weakBarrier.ReceiveSoundWave();
+                    }
                 }
             }
         }

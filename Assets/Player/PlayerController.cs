@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private List<Song> songs = new();
     private CharacterController controller;
+    private Transform cameraTransform;
     private Vector3 velocity;
     private bool isGrounded;
     private Vector3 move;
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
+        cameraTransform = Camera.main.transform;
         foreach (var component in GetComponents<Song>())
         {
             songs.Add(component);
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = controller.isGrounded;
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
-        
+
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
@@ -44,13 +46,22 @@ public class PlayerController : MonoBehaviour
                 speed = singSpeed;
                 break;
             }
-        };
+        }
 
-        move.Set(moveX, 0f, moveZ);
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+
+        forward.y = 0f;
+        right.y = 0f;
+
+        forward.Normalize();
+        right.Normalize();
+
+        move = (forward * moveZ) + (right * moveX);
 
         controller.Move(move * (speed * Time.deltaTime));
 
-        if (move != Vector3.zero)
+        if (move != Vector3.zero && moveZ >= 0)
         {
             Quaternion targetRotation = Quaternion.LookRotation(move);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotSpeed * Time.deltaTime);
