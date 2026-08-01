@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d9e816ef590ac8a4983ab500e891b347, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9fbf607a8f16fd4408b8ea6ae2a60b4d, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1799,9 +1799,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   cooldownTime: 1
-  pushForce: 5
-  pushDuration: 0.1
-  attackDuration: 0.5
+  pushForceX: 0.01
+  pushForceY: 1
+  attackDuration: 0.1
 --- !u!135 &1760995538
 SphereCollider:
   m_ObjectHideFlags: 0
