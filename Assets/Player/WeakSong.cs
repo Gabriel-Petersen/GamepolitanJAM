@@ -44,7 +44,7 @@ public class WeakSong : Song
 
     public override bool IsSinging()
     {
-        return Input.GetMouseButton(0); // Left mouse button
+        return Input.GetMouseButton(1); // Left mouse button
     }
     
     public override bool IsEnabled()

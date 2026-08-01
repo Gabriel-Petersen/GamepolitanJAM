@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
-        float speed = (Input.GetButton("Fire1") ? runSpeed : wkSpeed);
+        float speed = (Input.GetKey(KeyCode.LeftShift) ? runSpeed : wkSpeed);
         foreach (var song in songs)
         {
             if (song.IsSinging())
