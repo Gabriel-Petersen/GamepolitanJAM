@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class WeakSong : Song
 {
-    [SerializeField] private string targetTag;
     [SerializeField] private float maxRadius;
-
     [SerializeField] private float growDuration;
     [SerializeField] private float shrinkDuration;
+
+    public float slownessFactor;
 
     private float currentRadius = 0;
 
@@ -30,18 +30,11 @@ public class WeakSong : Song
             Collider[] colliders = Physics.OverlapSphere(transform.position, currentRadius);
             foreach (Collider collider in colliders)
             {
-                if (collider.CompareTag(targetTag))
-                {
-                    Debug.Log(collider.name + " is within the weak song radius.");
+                Debug.Log(collider.name + " is within the weak song radius.");
 
-                    if (collider.gameObject.TryGetComponent<ISongResponsive>(out var songResponsive))
-                    {
-                        songResponsive.OnSongListening(this);
-                    }
-                    else
-                    {
-                        Debug.LogWarning(collider.name + " does not implement ISongResponsive.");
-                    }
+                if (collider.gameObject.TryGetComponent<ISongResponsive>(out var songResponsive))
+                {
+                    songResponsive.OnSongListening(this);
                 }
             }
         }
