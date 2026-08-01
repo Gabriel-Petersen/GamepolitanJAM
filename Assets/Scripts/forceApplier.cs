@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class forceApplier : MonoBehaviour  
 {
-    public float forceMagnitude = 10f;
+    public float forceMagnitudeX = 10f;
+    public float forceMagnitudeY = 1f;
     public float cooldownTime = 1f;
     private float lastUsedTime = 0f;
 
@@ -18,10 +19,12 @@ public class forceApplier : MonoBehaviour
             Rigidbody rb = collisionInfo.GetComponent<Collider>().GetComponent<Rigidbody>();
             if (rb != null)
             {
-                Vector3 forceDirection = collisionInfo.transform.position - transform.position;
-                forceDirection.y = 0; // Keep the force horizontal
-                forceDirection.Normalize();
-                rb.AddForce(forceDirection * forceMagnitude, ForceMode.Impulse);
+                Vector3 forceDirectionX = collisionInfo.transform.position - transform.position;
+                forceDirectionX.y = 0; // Keep the force horizontal
+                forceDirectionX.Normalize();
+
+
+                rb.AddForce(forceDirectionX * forceMagnitudeX + Vector3.up * forceMagnitudeY, ForceMode.Impulse);
                 lastUsedTime = Time.time;
             }
         }

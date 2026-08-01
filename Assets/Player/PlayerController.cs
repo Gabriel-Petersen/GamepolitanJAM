@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravity = 9.81f;
     [SerializeField] private float rotSpeed = 15f;
+    [SerializeField] private float lookSpeed = 100f;
+    [SerializeField] private Animator animator;
+
 
     private void Start()
     {
@@ -37,6 +40,10 @@ public class PlayerController : MonoBehaviour
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
+        animator.SetFloat("Horizontal", moveX);
+        animator.SetFloat("Vertical", moveZ);
+
+        
 
         float speed = (Input.GetKey(KeyCode.LeftShift) ? runSpeed : wkSpeed);
         foreach (var song in songs)
@@ -51,17 +58,40 @@ public class PlayerController : MonoBehaviour
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
+        //move 1 - seta anda pra cada direção
+        /*
         move = (forward * moveZ) + (right * moveX);
         move.y = 0f;
         move.Normalize();
 
-        if (move.sqrMagnitude > 0.01f)
+          if (move.sqrMagnitude > 0.01f)
         {
             Quaternion targetPlayerRotation = Quaternion.LookRotation(move);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetPlayerRotation, rotSpeed * Time.deltaTime);
         }
+        */
+
+
+        //move 2 - rotaciona o player com A e D
+        move = (transform.forward * moveZ);
+        transform.Rotate(0f, moveX * lookSpeed * Time.deltaTime, 0f);
+
+
+
+
+        //resto do move
 
         controller.Move(move * (speed * Time.deltaTime));
+
+        if (moveZ > 0.1f || moveX > 0.1f)
+        {
+            animator.SetBool("IsWalking", true);
+        }
+        else
+        {
+            animator.SetBool("IsWalking", false);
+        }
+        
 
         if (Input.GetButtonDown("Jump") && isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
