@@ -1,29 +1,14 @@
-using System.Xml.Schema;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-public class WeakNote : MonoBehaviour
+public class WeakNote : SongNote
 {
+    [HideInInspector] public WeakSong weakSong;
 
-    public Vector3 velocity = Vector3.zero;
-    public WeakSong weakSong;
-    public float speed;
-    
-    void Start()
+    public override bool ShouldBeDestroyed()
     {
-         
-    }
-  
-    void Update()
-    {
-        if(weakSong == null) { return; }
+        if (weakSong == null) return true;
 
-        transform.position += (velocity * speed * Time.deltaTime) ;
-
-        if(Vector3.Distance(transform.position, weakSong.transform.position) > weakSong.currentRadius)
-        {
-            Destroy(gameObject);
-        }
-        
+        float currentDynamicRadius = weakSong.CurrentRadius;
+        return (transform.position - weakSong.transform.position).sqrMagnitude > currentDynamicRadius * currentDynamicRadius;
     }
 }

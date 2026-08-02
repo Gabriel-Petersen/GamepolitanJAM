@@ -1,9 +1,7 @@
 using UnityEngine;
-using UnityEngine.Events;
 
-public class BarreiraDestruidaComInimigo : MonoBehaviour, ISongResponsive
+public class BarreiraDestruidaComInimigo : Barrier
 {
-    [SerializeField] private UnityEvent onBreakEvent;
     [SerializeField] private float shakeIntensity;
 
     private Vector3 originalPosition;
@@ -40,10 +38,10 @@ public class BarreiraDestruidaComInimigo : MonoBehaviour, ISongResponsive
             enemy.ThrowEnemyAtBarrier();
         }
         Destroy(gameObject);
-        onBreakEvent.Invoke();
+        onBreakEvent?.Invoke();
     }
 
-    public void OnSongListening(Song song)
+    public override void OnSongListening(Song song)
     {
         if (song is WeakSong)
         {
