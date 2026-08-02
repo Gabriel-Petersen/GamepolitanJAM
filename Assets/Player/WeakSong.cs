@@ -20,17 +20,35 @@ public class WeakSong : Song
     public float SlownessFactor => slownessFactor;
     public float CurrentRadius => currentRadius;
 
+    public AudioSource audioSource;
+    private bool wasSinging = false;
+
+    private void Start()
+    {
+        wasSinging = false;
+    }
     private void Update()
     {
         if (IsSinging())
         {
             float growSpeed = maxRadius / growDuration;
             currentRadius += growSpeed * Time.deltaTime;
+            if (!wasSinging)
+            {
+                audioSource.Play();
+                wasSinging = true;
+            }
         }
         else
         {
             float shrinkSpeed = maxRadius / shrinkDuration;
             currentRadius -= shrinkSpeed * Time.deltaTime;
+            if (wasSinging)
+            {
+                audioSource.Stop();
+                wasSinging = false;
+            }
+       
         }
 
         currentRadius = Mathf.Clamp(currentRadius, 0f, maxRadius);

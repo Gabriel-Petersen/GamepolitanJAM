@@ -14,7 +14,7 @@ public class EnemyDamageArea : MonoBehaviour
     private bool isAttacking = false;
     private bool attackConfirmed = false;
     private float attackStartTime = 0f;
-
+    public AudioSource audioSource;
     private Transform playerTransform;
 
     void Start()
@@ -29,11 +29,12 @@ public class EnemyDamageArea : MonoBehaviour
 
     void Update()
     {
+     
         if (attackStartTime + attackDuration < Time.time && isAttacking)
         {
             EndAttack();
         }
-
+        /*
         if (playerTransform != null && !isAttacking && lastUsedTime + cooldownTime < Time.time)
         {
             if (Vector3.Distance(transform.position, playerTransform.position) <= attackTriggerRadius)
@@ -41,6 +42,7 @@ public class EnemyDamageArea : MonoBehaviour
                 StartAttack();
             }
         }
+        */
     }
 
     void OnTriggerStay(Collider collision)
@@ -72,11 +74,12 @@ public class EnemyDamageArea : MonoBehaviour
         }
     }
 
-    private void StartAttack()
+    public void StartAttack()
     {
         isAttacking = true;
         attackStartTime = Time.time;
         SpawnAttackNotes();
+        audioSource.Play();
     }
 
     private void EndAttack()
@@ -88,6 +91,8 @@ public class EnemyDamageArea : MonoBehaviour
 
     private void SpawnAttackNotes()
     {
+        
+
         if (attackNotePrefab == null || playerTransform == null) return;
 
         Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;

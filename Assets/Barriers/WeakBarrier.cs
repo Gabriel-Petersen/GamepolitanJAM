@@ -39,6 +39,7 @@ public class WeakBarrier : Barrier
         if (currentHealth <= 0)
         {
             Debug.Log($"A barreira {gameObject.name} foi destruída pela onda sonora!");
+            audioSource.Play();
             onBreakEvent?.Invoke();
             Destroy(gameObject);
         }

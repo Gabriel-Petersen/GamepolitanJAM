@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PusherSong : Song
 {
@@ -29,6 +30,7 @@ public class PusherSong : Song
     private float nextSphereTime = 0f;
     private float nextConeTime = 0f;
     private bool isSingingActive = false;
+    public AudioSource audioSource;
 
     private void Update()
     {
@@ -39,12 +41,14 @@ public class PusherSong : Song
             if (Time.time >= nextSphereTime)
             {
                 ExecuteSpherePulse();
+                audioSource.Play();
                 nextSphereTime = Time.time + sphereInterval;
             }
 
             if (Time.time >= nextConeTime)
             {
                 ExecuteConePulse();
+                audioSource.Play();
                 nextConeTime = Time.time + coneInterval;
             }
         }

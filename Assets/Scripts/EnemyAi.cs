@@ -13,13 +13,14 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
 
     private bool isBeingPushed;
     private float knockbackTimer;
-    private Animator anim;
+    public Animator anim;
 
     public bool IsBeingPushed => isBeingPushed;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        
 
         var playerObj = FindFirstObjectByType<PlayerController>();
         if (playerObj != null)
@@ -32,6 +33,9 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
 
     private void FixedUpdate()
     {
+        anim.SetFloat("movespeed", moveSpeed);
+        anim.SetBool("IsBeingPushed", isBeingPushed);
+
         if (playerTransform == null) return;
 
         if (isBeingPushed)
@@ -59,8 +63,7 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
         rb.AddForce(movementForce, ForceMode.VelocityChange);
 
         currentSpeed = moveSpeed;
-
-        anim.SetBool("IsBeingPushed", isBeingPushed);
+        
     }
 
     public void TriggerKnockback(Vector3 direction, Vector2 force, float duration)
@@ -77,7 +80,8 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
 
     public void ThrowEnemyAtBarrier()
     {
-        DestroyEnemy();
+        anim.SetTrigger("DestroyEnemy");
+        //DestroyEnemy(); //animacao cuida disso
     }
 
     public void DestroyEnemy()

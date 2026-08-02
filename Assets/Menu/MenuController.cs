@@ -6,6 +6,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private string gameSceneName = "GameScene";
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private GameObject controlsPanel;
     [SerializeField] private float fakeLoadingTime;
 
     private void Start()
@@ -41,6 +42,13 @@ public class MenuController : MonoBehaviour
 
     public void OnReturnButtonClicked() {
         creditsPanel.SetActive(false);
+        controlsPanel.SetActive(false);
         menuPanel.SetActive(true);
+    }
+
+    public void OnControlsButtonClicked()
+    {
+        menuPanel.SetActive(false);
+        controlsPanel.SetActive(true);
     }
 }

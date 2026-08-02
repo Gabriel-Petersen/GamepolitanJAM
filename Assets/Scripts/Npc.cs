@@ -17,6 +17,7 @@ public class Npc : MonoBehaviour
     private bool isFree = false;
     private bool isHappy = false;
     private float hapinessProgress = 0;
+    public Animator anim;
 
     public bool IsHappy => isHappy;
     public UnityEvent OnBecameHappyEvent => onBecameHappyEvent;
@@ -47,6 +48,7 @@ public class Npc : MonoBehaviour
                 {
                     hapinessProgress = maxHapiness;
                     Debug.Log($"NPC {gameObject.name} is fully happy!");
+                    anim.SetTrigger("animou");
                     BecameHappy();
                 }
             }
