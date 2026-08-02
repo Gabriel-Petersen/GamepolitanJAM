@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = 9.81f;
     [SerializeField] private float rotSpeed = 15f;
     [SerializeField] private float lookSpeed = 100f;
+    [SerializeField] private Animator animator;
+
 
     private void Start()
     {
@@ -38,6 +40,10 @@ public class PlayerController : MonoBehaviour
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
+        animator.SetFloat("Horizontal", moveX);
+        animator.SetFloat("Vertical", moveZ);
+
+        
 
         float speed = (Input.GetKey(KeyCode.LeftShift) ? runSpeed : wkSpeed);
         foreach (var song in songs)
@@ -74,8 +80,18 @@ public class PlayerController : MonoBehaviour
 
 
         //resto do move
-      
+
         controller.Move(move * (speed * Time.deltaTime));
+
+        if (moveZ > 0.1f || moveX > 0.1f)
+        {
+            animator.SetBool("IsWalking", true);
+        }
+        else
+        {
+            animator.SetBool("IsWalking", false);
+        }
+        
 
         if (Input.GetButtonDown("Jump") && isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
