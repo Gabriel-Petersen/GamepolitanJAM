@@ -13,6 +13,7 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
 
     private bool isBeingPushed;
     private float knockbackTimer;
+    private Animator anim;
 
     public bool IsBeingPushed => isBeingPushed;
 
@@ -58,6 +59,8 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
         rb.AddForce(movementForce, ForceMode.VelocityChange);
 
         currentSpeed = moveSpeed;
+
+        anim.SetBool("IsBeingPushed", isBeingPushed);
     }
 
     public void TriggerKnockback(Vector3 direction, Vector2 force, float duration)
