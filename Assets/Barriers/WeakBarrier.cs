@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class WeakBarrier : MonoBehaviour, ISongResponsive
+public class WeakBarrier : Barrier
 {
     [SerializeField] private float maxHealth;
     [SerializeField] private float damagePerSecond;
@@ -39,12 +39,10 @@ public class WeakBarrier : MonoBehaviour, ISongResponsive
         if (currentHealth <= 0)
         {
             Debug.Log($"A barreira {gameObject.name} foi destruída pela onda sonora!");
+            onBreakEvent?.Invoke();
             Destroy(gameObject);
         }
     }
 
-    public void OnSongListening(Song song)
-    {
-        isShaking = true;
-    }
+    public override void OnSongListening(Song song) { isShaking = true; }
 }

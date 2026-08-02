@@ -1,14 +1,24 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class WeakSong : Song
 {
     [SerializeField] private float maxRadius;
     [SerializeField] private float growDuration;
     [SerializeField] private float shrinkDuration;
+    [SerializeField] private WeakNote weakNote;
+    [SerializeField] private float instantiateCooldown = 0.1f;
+    [SerializeField] private float forwardOffset = 1f;
+    [SerializeField] private float slownessFactor;
 
-    public float slownessFactor;
+
+    [Header(("Debug"))]
+    [SerializeField] private bool debugMaxRadius;
 
     private float currentRadius = 0;
+    private float lastInstantiateTime;
+    public float SlownessFactor => slownessFactor;
+    public float CurrentRadius => currentRadius;
 
     private void Update()
     {
@@ -27,11 +37,17 @@ public class WeakSong : Song
 
         if (currentRadius > 0f)
         {
+
+            if(lastInstantiateTime + instantiateCooldown < Time.time)
+            {
+                SpawnWeakNote();
+                lastInstantiateTime = Time.time;
+            }
+
             Collider[] colliders = Physics.OverlapSphere(transform.position, currentRadius);
+
             foreach (Collider collider in colliders)
             {
-                Debug.Log(collider.name + " is within the weak song radius.");
-
                 if (collider.gameObject.TryGetComponent<ISongResponsive>(out var songResponsive))
                 {
                     songResponsive.OnSongListening(this);
@@ -57,5 +73,21 @@ public class WeakSong : Song
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, currentRadius);
         }
+        else if (debugMaxRadius)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, maxRadius);
+        }
     }
+
+    private void SpawnWeakNote()
+    {
+        var note = Instantiate(weakNote, transform.position + transform.forward * forwardOffset, Quaternion.identity);
+        Vector3 noteDirection = Random.insideUnitSphere + transform.forward / 10.0f;
+
+        int spriteIndex = Random.Range(0, note.sprites.Count);
+        note.spriteRenderer.sprite = note.sprites[spriteIndex];
+        note.weakSong = this;
+        note.velocity = noteDirection.normalized;        
+    }   
 }

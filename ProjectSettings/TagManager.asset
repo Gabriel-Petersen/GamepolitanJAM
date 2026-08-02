@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 3
   tags:
   - Weak Barrier
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
   - 
