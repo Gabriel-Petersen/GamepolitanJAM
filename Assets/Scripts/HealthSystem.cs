@@ -1,18 +1,26 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
-    
-    [Range(1f, 10f)]
+    [SerializeField] private Slider healthBar;
+    private Renderer damage_renderer;
+
     public float maxHp = 3f;
     public float currentHp;
-    public bool isPlayer = false;
+
+    [Space(10)]
     public bool blinkWhenDamaged = true;
+    [InspectableIf("blinkWhenDamaged")]
     public Material damagedMaterial;
+    [InspectableIf("blinkWhenDamaged")]
     private Material defaultMaterial;
+    [InspectableIf("blinkWhenDamaged")]
     public float blinkDuration = 0.1f;
-    public Renderer damage_renderer;
+    [InspectableIf("blinkWhenDamaged")]
     public Color defaultSpriteColor = Color.white;
+    [InspectableIf("blinkWhenDamaged")]
     public Color damagedSpriteColor = Color.red;
     private bool isSpriteRenderer = false;
 
@@ -21,9 +29,11 @@ public class HealthSystem : MonoBehaviour
     void Start()
     {
         currentHp = maxHp;
-        
+        healthBar.maxValue = maxHp;
+        healthBar.value = currentHp;
+
         if (damage_renderer == null)
-            damage_renderer = GetComponent<Renderer>();
+            damage_renderer = GetComponentInChildren<Renderer>();
         defaultMaterial = damage_renderer.material;
 
         
@@ -38,29 +48,31 @@ public class HealthSystem : MonoBehaviour
     {
         currentHp += amount;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
-        damageBlink();
+        if (healthBar != null)
+            healthBar.value = currentHp;
+        DamageBlink();
         Debug.Log(gameObject.name + " HP: " + currentHp);
     }
 
-    public void damageBlink()
+    public void DamageBlink()
     {
         if (blinkWhenDamaged)
         {
-            changeMaterial(damagedMaterial, damagedSpriteColor);
+            ChangeMaterial(damagedMaterial, damagedSpriteColor);
           
-            Invoke("resetMaterial", blinkDuration);
+            Invoke(nameof(ResetMaterial), blinkDuration);
             Debug.Log(gameObject.name + " is blinking due to damage.");
         }
     }
 
-    public void resetMaterial()
+    public void ResetMaterial()
     {
-        changeMaterial(defaultMaterial, defaultSpriteColor);
+        ChangeMaterial(defaultMaterial, defaultSpriteColor);
     }
 
 
     
-    private void changeMaterial(Material newMaterial = null, Color newColor = default(Color))
+    private void ChangeMaterial(Material newMaterial = null, Color newColor = default)
     {
         //so eh necessario definir cor apenas se o alvo for um sprite renderer
         //so eh necessario definir material apenas se o alvo for um objeto 3D
