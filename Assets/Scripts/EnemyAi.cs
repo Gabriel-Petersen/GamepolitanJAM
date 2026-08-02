@@ -1,71 +1,92 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class EnemyAi : MonoBehaviour, ISongResponsive
 {
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float acceleration = 20f;
+    [SerializeField] private float minimumPlayerDistance = 1f;
 
-    public float moveSpeed = 5f;
-    public float acceleration = 20f;
-    public float minimumPlayerDistance = 1f;
     private Rigidbody rb;
-    GameObject player;
+    private Transform playerTransform;
     private float currentSpeed;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+    private bool isBeingPushed;
+    private float knockbackTimer;
+
+    public bool IsBeingPushed => isBeingPushed;
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        player = FindFirstObjectByType<PlayerController>().gameObject;
-        currentSpeed = moveSpeed; //add by petersen
+
+        var playerObj = FindFirstObjectByType<PlayerController>();
+        if (playerObj != null)
+        {
+            playerTransform = playerObj.transform;
+        }
+
+        currentSpeed = moveSpeed;
     }
 
-    /*
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        Vector3 lookDirection = player.transform.position - transform.position;
+        if (playerTransform == null) return;
 
-    }
-    */
+        if (isBeingPushed)
+        {
+            knockbackTimer -= Time.fixedDeltaTime;
+            if (knockbackTimer <= 0f)
+            {
+                isBeingPushed = false;
+            }
+            return;
+        }
 
-    void FixedUpdate()
-    {
-        if (player == null) return;
-
-        // 1. Calculate direction to the player/target
-        Vector3 targetDirection = (player.transform.position - transform.position).normalized;
-        //targetDirection.y = 0; // Keep movement on the flat plane
-
-        // 2. Check if an external force (knockback) made the enemy exceed its normal speed
-        // If the enemy is moving too fast, let the knockback physics take over naturally
-        if (rb.linearVelocity.magnitude > moveSpeed + 1f || Vector3.Distance(player.transform.position, transform.position) < minimumPlayerDistance)
+        if (Vector3.Distance(playerTransform.position, transform.position) < minimumPlayerDistance)
         {
             return;
         }
 
-        // 3. Calculate how much velocity we need to add to match our desired movement
+        Vector3 targetDirection = (playerTransform.position - transform.position).normalized;
+        targetDirection.y = 0f;
+
         Vector3 targetVelocity = targetDirection * currentSpeed;
         Vector3 velocityError = targetVelocity - new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        // 4. Gently or firmly force the enemy toward the target velocity without breaking physics
         Vector3 movementForce = velocityError * acceleration * Time.fixedDeltaTime;
         rb.AddForce(movementForce, ForceMode.VelocityChange);
+
         currentSpeed = moveSpeed;
     }
 
+    public void TriggerKnockback(Vector3 direction, Vector2 force, float duration)
+    {
+        isBeingPushed = true;
+        knockbackTimer = duration;
+
+        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+
+        Vector3 finalImpulse = (direction * force.x) + (Vector3.up * force.y);
+
+        rb.AddForce(finalImpulse, ForceMode.Impulse);
+    }
 
     public void ThrowEnemyAtBarrier()
+    {
+        DestroyEnemy();
+    }
+
+    public void DestroyEnemy()
     {
         Destroy(gameObject);
     }
 
     public void OnSongListening(Song song)
     {
-        WeakSong weakSong = song as WeakSong;
-        if (weakSong != null)
+        if (song is WeakSong weakSong)
         {
             currentSpeed = moveSpeed * weakSong.slownessFactor;
         }
     }
 }
-
-
-   

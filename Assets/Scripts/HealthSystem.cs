@@ -12,15 +12,10 @@ public class HealthSystem : MonoBehaviour
 
     [Space(10)]
     public bool blinkWhenDamaged = true;
-    [InspectableIf("blinkWhenDamaged")]
     public Material damagedMaterial;
-    [InspectableIf("blinkWhenDamaged")]
     private Material defaultMaterial;
-    [InspectableIf("blinkWhenDamaged")]
     public float blinkDuration = 0.1f;
-    [InspectableIf("blinkWhenDamaged")]
     public Color defaultSpriteColor = Color.white;
-    [InspectableIf("blinkWhenDamaged")]
     public Color damagedSpriteColor = Color.red;
     private bool isSpriteRenderer = false;
 

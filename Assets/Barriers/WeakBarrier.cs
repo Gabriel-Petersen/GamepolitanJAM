@@ -1,9 +1,7 @@
 using UnityEngine;
-using UnityEngine.Events;
 
-public class WeakBarrier : MonoBehaviour, ISongResponsive
+public class WeakBarrier : Barrier
 {
-    [SerializeField] private UnityEvent onBreakEvent;
     [SerializeField] private float maxHealth;
     [SerializeField] private float damagePerSecond;
     [SerializeField] private float shakeIntensity;
@@ -46,6 +44,5 @@ public class WeakBarrier : MonoBehaviour, ISongResponsive
         }
     }
 
-    public UnityEvent GetOnBreakEvent() { return onBreakEvent; }
-    public void OnSongListening(Song song) { isShaking = true; }
+    public override void OnSongListening(Song song) { isShaking = true; }
 }

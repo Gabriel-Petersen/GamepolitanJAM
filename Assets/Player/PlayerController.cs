@@ -1,17 +1,14 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController), typeof(SongsHolder))]
 public class PlayerController : MonoBehaviour
 {
     private static readonly int VerticalHash = Animator.StringToHash("Vertical");
     private static readonly int HorizontalHash = Animator.StringToHash("Horizontal");
     private static readonly int IsWalkingHash = Animator.StringToHash("IsWalking");
 
-    [SerializeField] private List<Song> songs = new();
-
     private CharacterController controller;
+    private SongsHolder songsHolder;
     private Animator animator;
     private Transform cameraTransform;
     private Vector3 velocity;
@@ -24,25 +21,43 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpHeight = 1.5f;
     [SerializeField] private float gravity = 9.81f;
 
-    private Vector3 pushForce = Vector3.zero;
-    private float pushDuration = 0f;
+    private Vector3 pushVelocity = Vector3.zero;
+    private float pushTimer = 0f;
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInChildren<Animator>();
+        songsHolder = GetComponent<SongsHolder>();
         cameraTransform = Camera.main.transform;
-        foreach (var component in GetComponents<Song>())
-        {
-            songs.Add(component);
-        }
 
         if (gravity > 0)
             gravity *= -1;
     }
 
+    
+
     private void Update()
     {
+        if (pushTimer > 0f)
+        {
+            pushTimer -= Time.deltaTime;
+
+            controller.Move(pushVelocity * Time.deltaTime);
+
+            pushVelocity.y += gravity * Time.deltaTime;
+
+            pushVelocity.x = Mathf.Lerp(pushVelocity.x, 0f, 5f * Time.deltaTime);
+            pushVelocity.z = Mathf.Lerp(pushVelocity.z, 0f, 5f * Time.deltaTime);
+
+            if (controller.isGrounded && pushVelocity.y < 0f)
+            {
+                pushTimer = 0f;
+                pushVelocity = Vector3.zero;
+            }
+            return;
+        }
+
         isGrounded = controller.isGrounded;
         if (isGrounded && velocity.y < 0)
             velocity.y = -2f;
@@ -52,15 +67,11 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat(HorizontalHash, moveX);
         animator.SetFloat(VerticalHash, moveZ);
 
-        float speed = (Input.GetKey(KeyCode.LeftShift) ? runSpeed : wkSpeed);
-        foreach (var song in songs)
-        {
-            if (song.IsSinging())
-            {
-                speed = singSpeed;
-                break;
-            }
-        }
+        float speed;
+        if (songsHolder.IsAnySongSinging())
+            speed = singSpeed;
+        else
+            speed = (Input.GetKey(KeyCode.LeftShift) ? runSpeed : wkSpeed);
 
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
@@ -71,8 +82,6 @@ public class PlayerController : MonoBehaviour
         right.Normalize();
 
         move = forward * moveZ + right * moveX;
-
-        controller.Move(move * (speed * Time.deltaTime));
 
         if (move.sqrMagnitude > 0.01f)
         {
@@ -91,33 +100,18 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2.0f * gravity);
-        
+
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-
-        if (pushForce.sqrMagnitude > 0.01f)
-        {
-            controller.Move(pushForce);
-            pushDuration -= Time.deltaTime;
-            if (pushDuration <= 0f)
-            {
-                pushForce = Vector3.zero;
-            }
-        }
     }
 
-    /// <summary>
-    /// Pushes the player in a direction with the specified force.
-    /// </summary>
-    /// <param name="pushDirection">The direction to push the player (will be normalized)</param>
-    /// <param name="pushMagnitude">The magnitude of the push force</param>
-    /// <param name="duration">How long the push should be applied (in seconds)</param>
-    public void PushPlayer(Vector3 pushDirection, float pushMagnitude, float duration = 0.1f)
+    public void PushPlayer(Vector3 pushDirection, Vector2 force)
     {
         Vector3 normalizedDirection = pushDirection.normalized;
-        normalizedDirection.y = 0f; // Keep push horizontal to prevent unintended vertical movement
+        normalizedDirection.y = 0f;
 
-        pushForce = normalizedDirection * pushMagnitude;
-        pushDuration = duration;
+        pushVelocity = (normalizedDirection * force.x) + (Vector3.up * force.y);
+
+        pushTimer = 0.4f;
     }
 }

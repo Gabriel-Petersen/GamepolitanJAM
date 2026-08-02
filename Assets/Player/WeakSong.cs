@@ -6,6 +6,9 @@ public class WeakSong : Song
     [SerializeField] private float growDuration;
     [SerializeField] private float shrinkDuration;
 
+    [Header(("Debug"))]
+    [SerializeField] private bool debugMaxRadius;
+
     public float slownessFactor;
 
     private float currentRadius = 0;
@@ -30,8 +33,6 @@ public class WeakSong : Song
             Collider[] colliders = Physics.OverlapSphere(transform.position, currentRadius);
             foreach (Collider collider in colliders)
             {
-                Debug.Log(collider.name + " is within the weak song radius.");
-
                 if (collider.gameObject.TryGetComponent<ISongResponsive>(out var songResponsive))
                 {
                     songResponsive.OnSongListening(this);
@@ -56,6 +57,11 @@ public class WeakSong : Song
         {
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, currentRadius);
+        }
+        else if (debugMaxRadius)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, maxRadius);
         }
     }
 }
