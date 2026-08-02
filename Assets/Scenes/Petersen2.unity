@@ -762,6 +762,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc61e7a4cb0c450498ccad3a2b744af2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Npc
+  onBecameHappyEvent:
+    m_PersistentCalls:
+      m_Calls: []
   barrier: {fileID: 1144455212}
   enemiesAttached:
   - {fileID: 1167089559}
@@ -1311,6 +1314,7 @@ GameObject:
   - component: {fileID: 1033399671}
   - component: {fileID: 1033399670}
   - component: {fileID: 1033399672}
+  - component: {fileID: 1033399673}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -1357,6 +1361,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c73601d814a66024e9b35d39e4716411, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouseController
+--- !u!114 &1033399673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033399669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d09e0c580363b8479f570f315ce8acb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcManager
+  winSceneName: WinGame
+  onAllNpcsHappyEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onEachNpcBecomeHappyEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1114783355
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,6 +2378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60904f1d96fa6964bbf8a6514adf117c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  gameOverSceneName: GameOver
   healthBar: {fileID: 121480127}
   maxHp: 20
   currentHp: 0
@@ -2429,6 +2453,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   notePrefab: {fileID: 2564643671436675769, guid: 41c5b9e0765b74e4d8f9bf6998ae95ec, type: 3}
+  torusPrefab: {fileID: 2017430099412838350, guid: b57a9a46bc672a445a5ecff4360cd247, type: 3}
   sphereRadius: 2
   sphereInterval: 0.8
   spherePushDuration: 0.15

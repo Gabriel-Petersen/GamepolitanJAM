@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Npc : MonoBehaviour
 {
+    [SerializeField] private UnityEvent onBecameHappyEvent;
     [SerializeField] private Barrier barrier;
     [SerializeField] private List<EnemyAi> enemiesAttached;
     [SerializeField] private float hapinessPerSecond = 1.0f;
@@ -16,6 +17,9 @@ public class Npc : MonoBehaviour
     private bool isFree = false;
     private bool isHappy = false;
     private float hapinessProgress = 0;
+
+    public bool IsHappy => isHappy;
+    public UnityEvent OnBecameHappyEvent => onBecameHappyEvent;
 
     private void Start()
     {
@@ -66,6 +70,7 @@ public class Npc : MonoBehaviour
         }
 
         isHappy = true;
+        onBecameHappyEvent.Invoke();
     }
 
     private void BecameFree() 

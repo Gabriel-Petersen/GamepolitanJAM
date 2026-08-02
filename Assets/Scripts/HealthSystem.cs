@@ -1,9 +1,11 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HealthSystem : MonoBehaviour
 {
+    [SerializeField] private string gameOverSceneName = "GameOver";
     [SerializeField] private Slider healthBar;
     private Renderer damage_renderer;
 
@@ -47,6 +49,12 @@ public class HealthSystem : MonoBehaviour
             healthBar.value = currentHp;
         DamageBlink();
         Debug.Log(gameObject.name + " HP: " + currentHp);
+
+        if (currentHp <= 0)
+        {
+            Debug.Log(gameObject.name + " has died.");
+            SceneManager.LoadScene(gameOverSceneName);
+        }
     }
 
     public void DamageBlink()
