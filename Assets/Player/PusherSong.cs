@@ -5,6 +5,9 @@ public class PusherSong : Song
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private PusherSongNote notePrefab;
 
+    [Header("Efeito Visual do Toro")]
+    [SerializeField] private GameObject torusPrefab;
+
     [Header("Pulso Circular (Esfera Curta)")]
     [SerializeField] private float sphereRadius = 3f;
     [SerializeField] private float sphereInterval = 0.5f;
@@ -51,6 +54,9 @@ public class PusherSong : Song
     {
         SpawnSphereNotes(sphereNoteCount);
 
+        // Para o pulso circular, o toro expande em todas as direções a partir do centro (usamos transform.forward como base)
+        SpawnTorusEffect(transform.position + Vector3.up * 0.5f, transform.forward, sphereRadius, spherePushDuration);
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, sphereRadius, enemyLayer);
         foreach (Collider col in colliders)
         {
@@ -70,11 +76,14 @@ public class PusherSong : Song
     {
         SpawnConeNotes(coneNoteCount);
 
-        Collider[] colliders = Physics.OverlapSphere(transform.position, coneRange, enemyLayer);
         Vector3 forward = transform.forward;
         forward.y = 0f;
         forward.Normalize();
 
+        // Para o pulso direcional, o toro avança alinhado para a frente do cone
+        SpawnTorusEffect(transform.position + Vector3.up * 0.5f, forward, coneRange, conePushDuration);
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, coneRange, enemyLayer);
         float halfAngleCos = Mathf.Cos((coneAngle * 0.5f) * Mathf.Deg2Rad);
 
         foreach (Collider col in colliders)
@@ -96,6 +105,18 @@ public class PusherSong : Song
             {
                 songResponsive.OnSongListening(this);
             }
+        }
+    }
+
+    private void SpawnTorusEffect(Vector3 origin, Vector3 direction, float targetRadius, float duration)
+    {
+        if (torusPrefab == null) return;
+
+        var torusObj = Instantiate(torusPrefab);
+
+        if (torusObj.TryGetComponent<WaveTorusEffect>(out var torusEffect))
+        {
+            torusEffect.Initialize(origin, direction, targetRadius, duration);
         }
     }
 
@@ -153,15 +174,8 @@ public class PusherSong : Song
         }
     }
 
-    public override bool IsSinging()
-    {
-        return isSingingActive;
-    }
-
-    public override bool IsEnabled()
-    {
-        return isSingingActive;
-    }
+    public override bool IsSinging() => isSingingActive;
+    public override bool IsEnabled() => isSingingActive;
 
     private void OnDrawGizmos()
     {

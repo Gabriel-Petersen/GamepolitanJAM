@@ -2453,6 +2453,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   notePrefab: {fileID: 2564643671436675769, guid: 41c5b9e0765b74e4d8f9bf6998ae95ec, type: 3}
+  torusPrefab: {fileID: 2017430099412838350, guid: b57a9a46bc672a445a5ecff4360cd247, type: 3}
   sphereRadius: 2
   sphereInterval: 0.8
   spherePushDuration: 0.15
