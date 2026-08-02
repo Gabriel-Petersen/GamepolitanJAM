@@ -326,9 +326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 248fbb49ea988324ab0ccadf796e5da7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::forceApplier
-  forceMagnitudeX: 10
-  forceMagnitudeY: 3
-  cooldownTime: 1
+  forceVector: {x: 0, y: 0}
 --- !u!135 &435516104
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -605,9 +603,6 @@ MonoBehaviour:
   runSpeed: 6
   jumpHeight: 1.5
   gravity: 9.81
-  rotSpeed: 100
-  lookSpeed: 100
-  animator: {fileID: 800873131}
 --- !u!143 &516973992
 CharacterController:
   m_ObjectHideFlags: 0
@@ -645,13 +640,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60904f1d96fa6964bbf8a6514adf117c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  healthBar: {fileID: 0}
   maxHp: 3
   currentHp: 0
-  isPlayer: 1
   blinkWhenDamaged: 1
   damagedMaterial: {fileID: 2100000, guid: 3d9be8300b679bc43bd67cf8d5f5ad15, type: 2}
   blinkDuration: 0.1
-  damage_renderer: {fileID: 800873130}
   defaultSpriteColor: {r: 1, g: 1, b: 1, a: 1}
   damagedSpriteColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &516973995
@@ -773,7 +767,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 62374316, guid: ec80347f2e6e307408280b61eb1605e5, type: 3}
+  m_Sprite: {fileID: 62374316, guid: a815095abfc6d8648aa21cfb82cace27, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1042,6 +1036,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72247704df01dfb4b872d0f6e194478c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  onBreakEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  shakeIntensity: 0
   velocityBreakThreshold: 0
 --- !u!1 &1152632238
 GameObject:
@@ -1423,7 +1421,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1399096090
 Transform:
