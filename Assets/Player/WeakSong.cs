@@ -1,17 +1,23 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class WeakSong : Song
 {
     [SerializeField] private float maxRadius;
     [SerializeField] private float growDuration;
     [SerializeField] private float shrinkDuration;
+    [SerializeField] private GameObject weakNote;
 
     [Header(("Debug"))]
     [SerializeField] private bool debugMaxRadius;
 
     public float slownessFactor;
 
-    private float currentRadius = 0;
+    public float currentRadius = 0;
+    public float instantiateCooldown = 0.1f;
+    public float lastInstantiateTime;
+    public float forwardOffset = 1f;
 
     private void Update()
     {
@@ -30,7 +36,15 @@ public class WeakSong : Song
 
         if (currentRadius > 0f)
         {
+
+            if(lastInstantiateTime + instantiateCooldown < Time.time)
+            {
+                SpawnWeakNote();
+                lastInstantiateTime = Time.time;
+            }
+
             Collider[] colliders = Physics.OverlapSphere(transform.position, currentRadius);
+
             foreach (Collider collider in colliders)
             {
                 if (collider.gameObject.TryGetComponent<ISongResponsive>(out var songResponsive))
@@ -64,4 +78,22 @@ public class WeakSong : Song
             Gizmos.DrawWireSphere(transform.position, maxRadius);
         }
     }
+
+    private void SpawnWeakNote()
+    {
+        GameObject note = Instantiate(weakNote, transform.position + transform.forward * forwardOffset, Quaternion.identity);
+        Vector3 noteDirection = Random.insideUnitSphere;
+        
+        if(note.TryGetComponent<WeakNote>(out var wn)){
+            if (wn != null)
+            {
+                wn.weakSong = this;
+                wn.velocity = noteDirection.normalized;
+            }
+        }
+
+
+        float radius = 0f;
+        
+    }   
 }
