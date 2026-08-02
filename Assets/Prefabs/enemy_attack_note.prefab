@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2245970013817352881}
   - component: {fileID: 1117493099063426895}
   - component: {fileID: 5548604450743943154}
-  - component: {fileID: 4301697418256296316}
+  - component: {fileID: 8214025324569306329}
   m_Layer: 0
-  m_Name: weak_note
+  m_Name: enemy_attack_note
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 61cbb1a9eae9bbf4081e6707629aa84f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2b1e419b64d39374faa4a6c0835b3260, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6822505eb6232994b946fa590f3d8a1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LookAtPlayer
---- !u!114 &4301697418256296316
+--- !u!114 &8214025324569306329
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,16 +114,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 7706390916271567259}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf5a1a94ea5446942b91c9098a9f3226, type: 3}
+  m_Script: {fileID: 11500000, guid: b3444f1652b6c964ab29efa3c4c77d86, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: '::'
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackNote
   sprites:
-  - {fileID: 21300000, guid: f06dd48a032a1bc48b830febd6702738, type: 3}
-  - {fileID: 21300000, guid: 61cbb1a9eae9bbf4081e6707629aa84f, type: 3}
-  - {fileID: 21300000, guid: 61cbb1a9eae9bbf4081e6707629aa84f, type: 3}
-  - {fileID: 21300000, guid: f06dd48a032a1bc48b830febd6702738, type: 3}
-  - {fileID: 21300000, guid: fdb3dade1d784fd47a9c2b709d4a571a, type: 3}
+  - {fileID: 21300000, guid: cc5f16ae054063d44a60b21c65fe21e9, type: 3}
+  - {fileID: 21300000, guid: 6e747a5b0af6d7e408eb1f5919e0153b, type: 3}
+  - {fileID: 21300000, guid: 2b1e419b64d39374faa4a6c0835b3260, type: 3}
   velocity: {x: 0, y: 0, z: 0}
-  weakSong: {fileID: 0}
   spriteRenderer: {fileID: 0}
-  speed: 1
+  speed: 5
+  sourceTransform: {fileID: 0}
+  maxTravelDistance: 4

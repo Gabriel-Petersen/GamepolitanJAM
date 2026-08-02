@@ -86,7 +86,7 @@ public class EnemyAi : MonoBehaviour, ISongResponsive
     {
         if (song is WeakSong weakSong)
         {
-            currentSpeed = moveSpeed * weakSong.slownessFactor;
+            currentSpeed = moveSpeed * weakSong.SlownessFactor;
         }
     }
 }

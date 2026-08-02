@@ -3,12 +3,14 @@ using UnityEngine;
 public class PusherSong : Song
 {
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private PusherSongNote notePrefab;
 
     [Header("Pulso Circular (Esfera Curta)")]
     [SerializeField] private float sphereRadius = 3f;
     [SerializeField] private float sphereInterval = 0.5f;
     [SerializeField] private float spherePushDuration = 0.15f;
     [SerializeField] private Vector2 spherePushForce;
+    [SerializeField] private int sphereNoteCount = 5;
 
     [Header("Pulso Direcional (Setor Esférico Frontal)")]
     [SerializeField] private float coneRange = 7f;
@@ -16,12 +18,13 @@ public class PusherSong : Song
     [SerializeField] private float coneInterval = 1.2f;
     [SerializeField] private float conePushDuration = 0.3f;
     [SerializeField] private Vector2 conePushForce;
+    [SerializeField] private int coneNoteCount = 10;
 
     [Header("Debug")]
     [SerializeField] private bool debug = true;
 
-    private float sphereTimer = 0f;
-    private float coneTimer = 0f;
+    private float nextSphereTime = 0f;
+    private float nextConeTime = 0f;
     private bool isSingingActive = false;
 
     private void Update()
@@ -30,31 +33,24 @@ public class PusherSong : Song
 
         if (isSingingActive)
         {
-            float deltaTime = Time.deltaTime;
-            sphereTimer += deltaTime;
-            coneTimer += deltaTime;
-
-            if (sphereTimer >= sphereInterval)
+            if (Time.time >= nextSphereTime)
             {
                 ExecuteSpherePulse();
-                sphereTimer = 0f;
+                nextSphereTime = Time.time + sphereInterval;
             }
 
-            if (coneTimer >= coneInterval)
+            if (Time.time >= nextConeTime)
             {
                 ExecuteConePulse();
-                coneTimer = 0f;
+                nextConeTime = Time.time + coneInterval;
             }
-        }
-        else
-        {
-            sphereTimer = sphereInterval;
-            coneTimer = coneInterval;
         }
     }
 
     private void ExecuteSpherePulse()
     {
+        SpawnSphereNotes(sphereNoteCount);
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, sphereRadius, enemyLayer);
         foreach (Collider col in colliders)
         {
@@ -72,6 +68,8 @@ public class PusherSong : Song
 
     private void ExecuteConePulse()
     {
+        SpawnConeNotes(coneNoteCount);
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, coneRange, enemyLayer);
         Vector3 forward = transform.forward;
         forward.y = 0f;
@@ -109,6 +107,52 @@ public class PusherSong : Song
         }
     }
 
+    private void SpawnSphereNotes(int count)
+    {
+        if (notePrefab == null) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+            var note = Instantiate(notePrefab, spawnPos, Quaternion.identity);
+
+            Vector3 randomDir = Random.insideUnitSphere;
+            randomDir.y = Mathf.Abs(randomDir.y) * 0.5f;
+
+            note.sourceTransform = transform;
+            note.maxDistance = sphereRadius;
+            note.velocity = randomDir.normalized;
+        }
+    }
+
+    private void SpawnConeNotes(int count)
+    {
+        if (notePrefab == null) return;
+
+        Vector3 forward = transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+
+        for (int i = 0; i < count; i++)
+        {
+            float randomYaw = Random.Range(-coneAngle * 0.5f, coneAngle * 0.5f);
+            float randomPitch = Random.Range(-10f, 25f);
+
+            Quaternion rot = Quaternion.Euler(randomPitch, randomYaw, 0);
+            Vector3 spreadDir = rot * forward;
+
+            Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+            var note = Instantiate(notePrefab, spawnPos, Quaternion.identity);
+
+            if (note is PusherSongNote pusherNote)
+            {
+                pusherNote.sourceTransform = transform;
+                pusherNote.maxDistance = coneRange;
+                pusherNote.velocity = spreadDir.normalized;
+            }
+        }
+    }
+
     public override bool IsSinging()
     {
         return isSingingActive;
@@ -123,11 +167,9 @@ public class PusherSong : Song
     {
         if (!debug) return;
 
-        // 1. Gizmo do Pulso Circular (Esfera - Cor Ciano)
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, sphereRadius);
 
-        // 2. Gizmos do Setor Esférico Frontal (Cone - Cor Amarela)
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, coneRange);
 
@@ -135,7 +177,6 @@ public class PusherSong : Song
         forward.y = 0f;
         forward.Normalize();
 
-        // Desenha as linhas delimitadoras do ângulo de visão/empurro frontal
         Gizmos.color = Color.magenta;
         Quaternion leftRot = Quaternion.Euler(0, -coneAngle * 0.5f, 0);
         Quaternion rightRot = Quaternion.Euler(0, coneAngle * 0.5f, 0);
