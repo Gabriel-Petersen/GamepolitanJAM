@@ -6,6 +6,7 @@ public class MenuController : MonoBehaviour
     [SerializeField] private string gameSceneName = "GameScene";
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private float fakeLoadingTime;
 
     private void Start()
     {
@@ -16,11 +17,17 @@ public class MenuController : MonoBehaviour
     public void OnPlayButtonClicked()
     {
         try {
-            SceneManager.LoadScene(gameSceneName);
+            Invoke(nameof(LoadGameScene), fakeLoadingTime);
+            gameObject.SetActive(false);
         }
         catch (System.Exception e) {
             Debug.LogError($"Failed to load scene: {e.Message}");
         }
+    }
+
+    private void LoadGameScene()
+    {
+        SceneManager.LoadScene(gameSceneName);
     }
 
     public void OnCreditsButtonClicked() {
